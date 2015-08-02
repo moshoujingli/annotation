@@ -48,6 +48,7 @@ $(function  () {
 		}else{
 			marking+=1
 			saveGlobalState()
+			currentPoints = []
 			$("#pic").attr("src", pics[marking]);
 			resizeCanvas()
 		}
