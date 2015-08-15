@@ -59,7 +59,7 @@ $(function  () {
 		if (currentPoints.length>0) {
 			drawPointAt(currentPoints[0][0],currentPoints[0][1],currentPoints[0][2])
 			for (var i = 1; i < currentPoints.length; i++) {
-				drawPointAt(currentPoints[i][0],currentPoints[i][1],currentPoints[0][2])
+				drawPointAt(currentPoints[i][0],currentPoints[i][1],currentPoints[i][2])
 				drawLinkLine(currentPoints[i-1],currentPoints[i])
 			};
 		}
