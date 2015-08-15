@@ -1,7 +1,10 @@
 $(function  () {
 	currentPoints = []
+	saveArea = window.localStorage
 	function saveGlobalState () {
 		// body...
+		saveArea.lastMarking = marking
+		saveArea[marking] = currentPoints
 	}
 	function resizeCanvas () {
 		console.log($("#pic").width())
@@ -9,7 +12,6 @@ $(function  () {
 		$('#mark_place')[0].width=$("#pic").width()
 		$('#mark_place')[0].height=$("#pic").height()
 	}
-	resizeCanvas()
 	function drawPointAt (x,y,visiable) {
 			context = $('#mark_place')[0].getContext("2d");
 			context.fillStyle = visiable?'#ff0000':'#000000';
@@ -40,7 +42,15 @@ $(function  () {
 	})
 
 	console.log(pics)
-	marking = 0
+	lastMarking = parseInt(saveArea.lastMarking)
+	if (lastMarking >=0) {
+		marking = lastMarking
+	}else{
+		marking = 0
+	}
+	$("#pic").attr("src", pics[marking]).load(function  () {
+		resizeCanvas()
+	});
 	$("#save").click(function  () {
 		if (marking == pics.length-1 ) {
 			alert('All finished')
@@ -49,9 +59,17 @@ $(function  () {
 			marking+=1
 			saveGlobalState()
 			currentPoints = []
-			$("#pic").attr("src", pics[marking]);
-			resizeCanvas()
+			$("#pic").attr("src", pics[marking]).load(function  () {
+				resizeCanvas()
+			});
 		}
+	})
+	$('#resetall').click(function  () {
+		for (var i = pics.length - 1; i >= 0; i--) {
+			saveArea[marking] = []
+		};
+		saveArea.lastMarking =0
+		location.reload()
 	})
 	$('#reset').click(function  () {
 		currentPoints.pop()
