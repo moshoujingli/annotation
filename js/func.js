@@ -1,10 +1,15 @@
 $(function  () {
 	currentPoints = []
 	saveArea = window.localStorage
+	img_idx = $("#img_idx")[0]
+	img_idx.download='img_idx.tsv'
+	img_idx.href='data:text/plan,'
+	img_loc = $("#img_loc")[0]
+	img_loc.download='img_loc.tsv'
+	img_loc.href='data:text/plan,'
 	function saveGlobalState () {
-		// body...
 		saveArea.lastMarking = marking
-		saveArea[marking] = currentPoints
+		saveArea[marking-1] = currentPoints
 	}
 	function resizeCanvas () {
 		console.log($("#pic").width())
@@ -52,12 +57,12 @@ $(function  () {
 		resizeCanvas()
 	});
 	$("#save").click(function  () {
+		marking+=1
+		saveGlobalState()
 		if (marking == pics.length-1 ) {
 			alert('All finished')
 			$("#save").hide()
 		}else{
-			marking+=1
-			saveGlobalState()
 			currentPoints = []
 			$("#pic").attr("src", pics[marking]).load(function  () {
 				resizeCanvas()
@@ -82,6 +87,33 @@ $(function  () {
 			};
 		}
 		
+	})
+	$("#generate").click(function  () {
+		idxContent  = ''
+		locContent = ''
+		for (var i = 0; i < saveArea.lastMarking; i++) {
+			imgNage = pics[i].substring(6)
+			idxContent+=i
+			idxContent+="\t"
+			idxContent+=imgNage
+			idxContent+="\n"
+
+			points = saveArea[i].split(',')
+			for (var j = 0; j < points.length/3; j++) {
+				locContent += i + '\t'
+				locContent += j + '\t'
+				x = points[j*3+0]
+				y = points[j*3+1]
+				visiable = points[j*3+2]
+				locContent += x + '\t' +y + '\t' + visiable + '\t'
+				locContent+='\n'
+			};
+		};
+		console.log(idxContent)
+		console.log(locContent)
+		img_idx.href='data:text/plan;base64,'+Base64.encode(idxContent)
+		img_loc.href='data:text/plan;base64,'+Base64.encode(locContent)
+
 	})
 	function cleanCanvas () {
 		$('#mark_place')[0].width = $('#mark_place')[0].width
